@@ -22,7 +22,7 @@ class AsrSphinx:
         self.INDEX = rospy.get_param("INDEX", "1")
         self.NBTHREADS = rospy.get_param("NBTHREADS", "4")
         self.BEAMSIZE = rospy.get_param("BEAMSIZE", "3") 
-        self.HOST = rospy.get_param("HOST", "localhost")
+        self.HOST = rospy.get_param("HOST", "192.168.101.123")
         self.PORT = rospy.get_param("PORT", "7000")
         self.RPCPORT = rospy.get_param("RPCPORT", "8000")
         self.DATAPATH = rospy.get_param("DATAPATH", "demo")
@@ -34,6 +34,8 @@ class AsrSphinx:
         rospy.loginfo("Parameters loaded in sphinx asr node...")
         self.ASRPROCESS=subprocess.Popen([self.ASRPATH,str(self.INDEX),str(self.NBTHREADS),str(self.BEAMSIZE),str(self.HOST),str(self.PORT),str(self.DATAPATH),str(self.ASRCWD),str(self.RPCPORT),str(self.TRESHOLD),str(self.HMM),str(self.MLLR)],cwd=self.ASRCWD)   
         rospy.loginfo("Started in sphinx asr node...") 
+        rospy.sleep(40)
+        rospy.set_param("ORDER", "1")
         self.sleep()
       except:
         rospy.loginfo("Error in sphinx asr node...") 

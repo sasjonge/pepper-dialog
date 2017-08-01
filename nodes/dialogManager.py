@@ -139,17 +139,7 @@ class DialogManager:
           msg=self.REQUESTFINALFAILED
         self.corepub.publish(msg)
 	rospy.loginfo(msg)
-    
-    # Send a request to PR2
-    def callPr2(self):
-        try:
-           pepper = xmlrpclib.ServerProxy('http://'+str(rospy.get_param('PR2IP','127.0.0.1'))+':'+str(rospy.get_param('PR2PORT','8000'))+"/RPC2")
-           self.contactStatusPr2=pepper.cutCake('cut cake')
-        except Exception,e:
-           rospy.logwarn(str(e))
-           rospy.logwarn('The new pr2 addresses are:'+str(rospy.get_param('PR2IP','127.0.0.1'))+' and '+str(rospy.get_param('PR2PORT','8000')))
-           self.contactStatusPr2=-1
-        
+
     #on close
     def cleanup(self):
         rospy.loginfo("Shutting down dialogManager node...")
@@ -160,7 +150,6 @@ class DialogManager:
         if(msg.data==self.CUTCAKE):
            self.pub.publish(String(self.REFLECTION))
            self.LASTSAY=self.REFLECTION
-           self.callPr2()
            if(self.contactStatusPr2<0):
               #call failed
               self.corepub.publish(String(self.REQUESTFAILED))

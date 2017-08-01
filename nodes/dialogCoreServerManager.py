@@ -23,7 +23,7 @@ class DialogCoreClientManager(object):
         rospy.on_shutdown(self.cleanup)
         rospy.loginfo("Starting core server manager node...")
         #read the parameter
-        self.CORESERVERIP = rospy.get_param("CORESERVERIP", "localhost")
+        self.CORESERVERIP = rospy.get_param("CORESERVERIP", "192.168.101.123")
         self.CORESERVERPORT = int(rospy.get_param("CORESERVERPORT", "1024"))
         self.CORESERVERPATH=rospy.get_param("CORESERVERPATH", "clear")
         self.CORESERVERCWD=rospy.get_param("CORESERVERCWD", "")

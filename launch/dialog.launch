@@ -9,13 +9,10 @@
  <param name="PEPPERIP" value="192.168.101.69"/>
 
  <param name="RPCSERVERPORT" value="8000"/>
- <param name="RPCSERVERIP" value="192.168.101.253"/>
-
- <param name="PR2PORT" value="39340"/>
- <param name="PR2IP" value="192.168.101.97"/>
+ <param name="RPCSERVERIP" value="192.168.101.123"/>
 
  <param name="CORESERVERPORT" value="1024"/>
- <param name="CORESERVERIP" value="192.168.101.253"/>
+ <param name="CORESERVERIP" value="192.168.101.123"/>
  <param name="CORESERVERPATH" value="./BINARIES/LinuxChatScript64"/>
  <param name="CORESERVERCWD" value="$(find dialogsystem)/ChatScript"/>
  <param name="INTERFACE" value="eth0"/>
@@ -23,12 +20,12 @@
  <param name="INDEX" value="1"/>
  <param name="NBTHREADS" value="4"/>
  <param name="BEAMSIZE" value="3"/>
- <param name="HOST" value="192.168.101.253" />
+ <param name="HOST" value="192.168.101.123" />
  <param name="PORT" value="7000"/>
  <param name="RPCPORT" value="8000"/>
- <param name="DATAPATH" value="data"/>
- <param name="ASRPATH" value="./CMU/sphinx-source/pocketsphinx/src/programs/pocketsphinx_continuous"/>
- <param name="ASRCWD" value="$(find dialogsystem)"/>
+ <param name="DATAPATH" value="demo"/>
+ <param name="ASRPATH" value="pocketsphinx_continuous"/>
+ <param name="ASRCWD" value="/home/sascha/pepper_dialog/pepper_dialog_iai/src/pocketsphinx"/>
  <param name="TRESHOLD" value="-10000"/>
  <param name="HMM" value="model/en-us-adapt"/>
  <param name="MLLR" value="model/mllr_matrix"/>
@@ -39,11 +36,7 @@
  <param name="RPORT" value="22"/>
 
  <param name="ORDER" value="0"/>
-
-
- <node name="netparamupdater" pkg="dialogsystem" type="netparamupdater.py" output="screen">
- </node> 
-
+ 
  <node name="rpc_server" pkg="dialogsystem" type="rpc_server.py" output="screen">
   </node>
 
@@ -65,6 +58,5 @@
  </node>
 
  <node name="gstreamer_sphinx" pkg="dialogsystem" type="gstreamer_sphinx.py" output="screen">
- </node>
-
+</node>
 </launch>

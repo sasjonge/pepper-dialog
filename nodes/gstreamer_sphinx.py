@@ -22,7 +22,7 @@ class GstSphinx:
         self.RUSERNAME = rospy.get_param("RUSERNAME", "nao")
         self.RPORT = rospy.get_param("RPORT", "22") 
         self.RPASSWORD= rospy.get_param("RPASSWORD", "iai") 
-        self.HOST = rospy.get_param("HOST", "localhost")
+        self.HOST = rospy.get_param("HOST", "192.168.101.123")
         self.PORT = rospy.get_param("PORT", "7000")
         #client
         rospy.loginfo("load parameters...")
@@ -42,6 +42,7 @@ class GstSphinx:
         rospy.loginfo("output: "+str(self.stdout.read()))
         rospy.loginfo("streaming...")
       except:
+        rospy.logerr('error while starting server')
         if(self.client !=None):
            self.client.close()
 

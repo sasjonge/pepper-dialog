@@ -16,7 +16,7 @@ $userprompt = ^"%user: >"
 $botprompt = ^"PEPPER: "
 
 #pepper robot data
-$peppername = Franklin
+$peppername = Pepper
 $pepperorigin = Germany
 $pepperage    = 10
    
