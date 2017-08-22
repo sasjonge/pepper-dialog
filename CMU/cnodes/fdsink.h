@@ -73,3 +73,4 @@ G_GNUC_INTERNAL GType gst_fd_sink_get_type (void);
 G_END_DECLS
 
 #endif /* __GST_FD_SINK_H__ */
+

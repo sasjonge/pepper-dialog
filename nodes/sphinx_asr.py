@@ -22,18 +22,21 @@ class AsrSphinx:
         self.INDEX = rospy.get_param("INDEX", "1")
         self.NBTHREADS = rospy.get_param("NBTHREADS", "4")
         self.BEAMSIZE = rospy.get_param("BEAMSIZE", "3") 
-        self.HOST = rospy.get_param("HOST", "localhost")
+        self.HOST = rospy.get_param("HOST", "192.168.101.123")
         self.PORT = rospy.get_param("PORT", "7000")
         self.RPCPORT = rospy.get_param("RPCPORT", "8000")
         self.DATAPATH = rospy.get_param("DATAPATH", "demo")
         self.ASRPATH= rospy.get_param("ASRPATH", "pocketsphinx_continuous")
-        self.ASRCWD=rospy.get_param("ASRCWD", "/home/franklin/Desktop/sut/src/pocketsphinx")
+        self.ASRCWD=rospy.get_param("ASRCWD", "/home/sascha/pepper_dialog/pepper_dialog_iai/src/pepper-dialog/CMU/pocketsphinx")
         self.TRESHOLD=rospy.get_param("TRESHOLD", "-10000")
         self.HMM=rospy.get_param("HMM", "model/en-us-adapt")
         self.MLLR=rospy.get_param("MLLR", "model/mllr_matrix")
         rospy.loginfo("Parameters loaded in sphinx asr node...")
+        rospy.loginfo(str([self.ASRPATH,str(self.INDEX),str(self.NBTHREADS),str(self.BEAMSIZE),str(self.HOST),str(self.PORT),str(self.DATAPATH),str(self.ASRCWD),str(self.RPCPORT),str(self.TRESHOLD),str(self.HMM),str(self.MLLR)]))
         self.ASRPROCESS=subprocess.Popen([self.ASRPATH,str(self.INDEX),str(self.NBTHREADS),str(self.BEAMSIZE),str(self.HOST),str(self.PORT),str(self.DATAPATH),str(self.ASRCWD),str(self.RPCPORT),str(self.TRESHOLD),str(self.HMM),str(self.MLLR)],cwd=self.ASRCWD)   
-        rospy.loginfo("Started in sphinx asr node...") 
+        rospy.loginfo("Started in sphinx asr node...")
+        rospy.sleep(10) 
+        rospy.set_param("ORDER", "1")
         self.sleep()
       except:
         rospy.loginfo("Error in sphinx asr node...") 
@@ -47,7 +50,7 @@ class AsrSphinx:
       
    def sleep(self):
         while not rospy.is_shutdown():
-              rospy.sleep(10)
+              rospy.sleep(1)
  
    
 if __name__=="__main__":

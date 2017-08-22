@@ -124,31 +124,12 @@ class DialogManager:
     def informationRetrieval(self,msg):
         #send recognized words/phrase to core dialogue manager for processing
         self.corepub.publish(msg)
-	rospy.loginfo("Dialog Manager: "+msg.data+" sent")
+        rospy.loginfo("Dialog Manager: "+msg.data+" sent")
                
            
     # Send pr2 reaction to core dialog manager
     def feedback(self, status):
-        #rospy.set_param('receiving',1)
-        rospy.loginfo(status.data)
-        if(status.data=="1"):
-          #pr2-robot completed successfully the task 
-          msg=self.REQUESTDONE
-        else:
-          #pr2-robot cannot complete the task after starting it
-          msg=self.REQUESTFINALFAILED
-        self.corepub.publish(msg)
-	rospy.loginfo(msg)
-    
-    # Send a request to PR2
-    def callPr2(self):
-        try:
-           pepper = xmlrpclib.ServerProxy('http://'+str(rospy.get_param('PR2IP','127.0.0.1'))+':'+str(rospy.get_param('PR2PORT','8000'))+"/RPC2")
-           self.contactStatusPr2=pepper.cutCake('cut cake')
-        except Exception,e:
-           rospy.logwarn(str(e))
-           rospy.logwarn('The new pr2 addresses are:'+str(rospy.get_param('PR2IP','127.0.0.1'))+' and '+str(rospy.get_param('PR2PORT','8000')))
-           self.contactStatusPr2=-1
+        rospy.loginfo(status)
         
     #on close
     def cleanup(self):
@@ -156,28 +137,7 @@ class DialogManager:
 
     #process output of core dialogue manager
     def coreOutputProcessor(self,msg):
-        #a service has been requested
-        if(msg.data==self.CUTCAKE):
-           self.pub.publish(String(self.REFLECTION))
-           self.LASTSAY=self.REFLECTION
-           self.callPr2()
-           if(self.contactStatusPr2<0):
-              #call failed
-              self.corepub.publish(String(self.REQUESTFAILED))
-           else: 
-               if(self.contactStatusPr2==0):
-                  #call succeeded  and pr2 is free
-                  self.corepub.publish(String(self.PROCESSINGREQUESTSHORT))
-               else:
-                  #call succeeded and pr2 is busy
-                  self.corepub.publish(String(self.PROCESSINGREQUESTLONG))
-        else:
-             if(msg.data==self.MISUNDERSTANDING):
-                self.pub.publish(String(self.LASTSAY))
-             else:
-                 #simple output: send the output to synthesizer for speaking
-                 self.pub.publish(msg)
-                 self.LASTSAY=msg.data
+      self.pub.publish(msg)
              
 
 if __name__=="__main__":

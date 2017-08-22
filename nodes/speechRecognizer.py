@@ -126,9 +126,9 @@ class SpeechRecognitionWrapper(ALModule):
 		   
 
     def stopSpeechRecognition(self):
-	    """ stop speech recognition if human speaker disapper """
-	    if self.is_speech_reco_started:
-		self.is_speech_reco_started = False
+        """ stop speech recognition if human speaker disapper """
+        if self.is_speech_reco_started:
+            self.is_speech_reco_started = False
 	    
 
 	#Event handlers   
@@ -139,24 +139,32 @@ class SpeechRecognitionWrapper(ALModule):
 	    rospy.loginfo('Human likely lost')
 
     def on_human_detected(self, key, value, subscriber_id ):
-	    """ raised when people appear"""
-	    rospy.loginfo('Human likely detected: '+str(value))
-	    if value >= 0:  # found a new person
-	       #alert the dialog Manager to synchronize for communication
-	       self.pub.publish(String(self.TALKSTART))
-	       self.startSpeechRecognition()
-	       rospy.loginfo('new Human likely detected')
+        """ raised when people appear"""
+        rospy.loginfo('Human likely detected: '+str(value))
+        if value >= 0:  # found a new person
+           #alert the dialog Manager to synchronize for communication
+           self.pub.publish(String(self.TALKSTART))
+           self.startSpeechRecognition()
+           rospy.loginfo('new Human likely detected')
+        else:
+           rospy.loginfo('Human likely lost')
+           self.stopSpeechRecognition()
+           self.pub.publish(String(self.TALKEND))
 
-	       
+           
     def on_word_recognized(self,msg ):
-	"""Publish the words recognized by NAO via ROS """
-	rospy.loginfo('******speech detected********')
+        """Publish the words recognized by NAO via ROS """
+        rospy.loginfo('******speech detected********')
         if self.is_speech_reco_started:
-             if(rospy.get_param('busy','1')==0):
+            rospy.loginfo('******* speech recognition started *********')
+            if(rospy.get_param('busy','1')==0):
                 #self.mic_spk.closeAudioInputs()
-  	        self.pub.publish(msg)
+                self.pub.publish(msg)
                 rospy.loginfo('ACCEPTED:***********************************'+msg.data)
-	        rospy.set_param('busy',1)
+                rospy.set_param('busy',1)
+            else:
+                rospy.sleep(5)
+                rospy.set_param('busy',0)
 
     # Install global variables needed for Naoqi callbacks to work
     def install_naoqi_globals(self):

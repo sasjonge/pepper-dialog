@@ -6,6 +6,7 @@ import rospy
 import roslib
 from std_msgs.msg import String
 import subprocess
+from naoqi import ALProxy
 #Here is a client for core management of dialogue
 
 
@@ -27,6 +28,8 @@ class DialogCoreClientManager(object):
         self.CORESERVERPORT = int(rospy.get_param("CORESERVERPORT", "1024"))
         self.CORESERVERPATH=rospy.get_param("CORESERVERPATH", "clear")
         self.CORESERVERCWD=rospy.get_param("CORESERVERCWD", "")
+        self.PEPPERIP = rospy.get_param("PEPPERIP", "192.168.101.69")
+        self.PEPPERPORT = rospy.get_param("PEPPERPORT", "9559") 
         self.ADDR = (self.CORESERVERIP, self.CORESERVERPORT) 
         self.USERNAME= 'user'+str(self.USERID)
         self.BOT=''
@@ -38,7 +41,7 @@ class DialogCoreClientManager(object):
         rospy.Subscriber('dialogManager/coreDialogBus', String, self.process)
         #chartscript server
         rospy.loginfo("starting core server Manager ...")
-        self.SERVERPROCESS=subprocess.Popen([self.CORESERVERPATH],cwd=self.CORESERVERCWD)    
+        self.animation = ALProxy("ALAnimationPlayer", self.PEPPERIP, int(self.PEPPERPORT))
         #connection to chatscript server cd BINARIES && ./LinuxChatScript64
         #initalize the dialogue
         #rospy.sleep(10)
@@ -47,66 +50,45 @@ class DialogCoreClientManager(object):
   
 
    def cleanup(self):
-        global SELF_CLIENT_SOCKET
         rospy.loginfo("Shutting down core server manager node...")
-        self.SERVERPROCESS.terminate()
-        self.SERVERPROCESS.kill()
-        SELF_CLIENT_SOCKET.close()
 
    def process(self,msg):
-	  global SELF_CLIENT_SOCKET
-          #connection to chatscript server cd BINARIES && ./LinuxChatScript64
-          try:
-		  SELF_CLIENT_SOCKET = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		  SELF_CLIENT_SOCKET.connect(self.ADDR)
-	  
-                  
-		  #read request of the user
-		 
-		  if(msg.data==self.TALKSTART):
-			 self.DATA_IN=':reset'
-		  else:
-			 self.DATA_IN=msg.data
+        #connection to chatscript server cd BINARIES && ./LinuxChatScript64
+        try:
+  		    #read request of the user
+          if(msg.data==self.TALKSTART):
+            self.DATA_IN=':reset'
+          else:
+            self.DATA_IN=msg.data
 
-		  #request of the user sent to for processing
-		  SELF_CLIENT_SOCKET.sendall((self.USERNAME+chr(0)+self.BOT+chr(0)+self.DATA_IN +chr(0))) 
+          #system's reaction
+          self.DATA_OUT = self.DATA_IN
+          rospy.loginfo('before*********************')
+          rospy.loginfo(self.DATA_IN)
+          if(self.DATA_OUT =='dance'):
+            self.animation.run("animations/Stand/Gestures/Hey_1")
 
-		  #system's reaction
-	 	  self.DATA_OUT = SELF_CLIENT_SOCKET.recv(1024)
+          #publish reaction
+          self.pub.publish(String(self.DATA_OUT))
+          #change user
+          if(msg.data==self.TALKSTART):
+            self.USERID+=1
+            self.USERNAME= 'user'+str(self.USERID)
+
+          #print Inputs and Outputs of core system manager
+
+          rospy.loginfo('CORE SERVER INPUT: '+self.DATA_IN) 
+          rospy.loginfo('CORE SERVER OUTPUT: '+self.DATA_OUT)
+
+        except:
+          rospy.loginfo('Error occured!!!'+str(self.ADDR))  
 		  
-		  #publish reaction
-                  self.pub.publish(String(self.DATA_OUT))
-
-                  #change user
-		  if(msg.data==self.TALKSTART):
-                    self.USERID+=1
-                    self.USERNAME= 'user'+str(self.USERID)
-		  
-                   
-
-                  #print Inputs and Outputs of core system manager
-
-                  rospy.loginfo('CORE SERVER INPUT: '+self.DATA_IN) 
-		  rospy.loginfo('CORE SERVER OUTPUT: '+self.DATA_OUT) 
-
-		  #close socket allocated for request 
-		  SELF_CLIENT_SOCKET.close() 
-          except:
-                  rospy.loginfo('Error occured!!!'+str(self.ADDR))  
-		  
-
-	 
-	  
- 
-  
-                    
 
 if __name__=="__main__":
-    
-    try:	
+    try:
         DialogCoreClientManager()
-	rospy.loginfo('We came here')
+        rospy.loginfo('We came here')
         rospy.spin()
     except:
-	e = sys.exc_info()[0]
+        e = sys.exc_info()[0]
         rospy.loginfo("Danger: An ERROR ocurred: %s" % e)

@@ -22,7 +22,7 @@ class GstSphinx:
         self.RUSERNAME = rospy.get_param("RUSERNAME", "nao")
         self.RPORT = rospy.get_param("RPORT", "22") 
         self.RPASSWORD= rospy.get_param("RPASSWORD", "iai") 
-        self.HOST = rospy.get_param("HOST", "localhost")
+        self.HOST = rospy.get_param("HOST", "192.168.101.69")
         self.PORT = rospy.get_param("PORT", "7000")
         #client
         rospy.loginfo("load parameters...")
@@ -32,7 +32,7 @@ class GstSphinx:
         rospy.loginfo("instantiate client...")
         self.client.connect(self.RHOST,username=self.RUSERNAME,port=int(self.RPORT), password=self.RPASSWORD)
         rospy.loginfo("connect to remote host...")
-        self.command="gst-launch-0.10 pulsesrc "+" ! 'audio/x-raw-int, format=S16LE, channels=1, width=16,                          depth=16,rate=16000' ! "+"tcpclientsink port="+str(self.PORT)+" host="+str(self.HOST)
+        self.command="gst-launch-0.10 pulsesrc "+" ! 'audio/x-raw-int, format=S16LE, channels=1, width=16, depth=16,rate=16000' ! "+"tcpclientsink port="+str(self.PORT)+" host="+str(self.HOST)
         #wait until gstreamer-server started before starting the client
         while int(rospy.get_param("ORDER", "0"))!=1:
               rospy.loginfo("loop ...")
@@ -54,6 +54,3 @@ class GstSphinx:
 if __name__=="__main__":
    
      GstSphinx()
-       
-       
-   
